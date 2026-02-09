@@ -1,5 +1,5 @@
 Django==4.2.19
-mysqlclient==2.2.7
+PyMySQL==1.1.2
 
 django-crispy-forms==2.3
 crispy-bootstrap4==2024.1
