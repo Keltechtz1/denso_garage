@@ -1,0 +1,273 @@
+{% extends 'mg/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'office:dashboard' %}">Home</a></li>
+              <li class="breadcrumb-item active">Backoffice Dashboard</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        {% if messages %}
+                         {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }}   alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <p><strong>Notification!</strong></p>
+                              <p>{{ message }}.</p>
+                         </div>
+                         {% endfor %}
+                      {% endif %}
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-secondary">
+              <div class="inner">
+                <h3>{{ new_job }}</h3>
+
+                <p>New Job</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-users"></i>
+              </div>
+              <a href="{% url 'office:new_job' %}" class="small-box-footer">See All <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{ new_requests }}</h3>
+
+                <p>Job completed not paid</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-users"></i>
+              </div>
+              <a href="{% url 'office:new_order' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{ active }}</h3>
+
+                <p>Job paid not completed</p> 
+              </div>
+              <div class="icon">
+                <i class="fa fa-book"></i>
+              </div>
+              <a href="{% url 'office:active_work' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-12">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3>{{completed}}</h3>
+
+                <p>Job paid completed</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-print"></i>
+              </div>
+              <a href="{% url 'office:completed_work' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+
+          <!-- ./col -->
+          <!-- <div class="col-lg-3 col-6">
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>{{ feedbacks }}</h3>
+
+                <p>Costomer Feedbacks</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-users"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div> -->
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+          <div class="col-lg-9">
+           <div class="col-sm-12 col-12">
+             <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">Quick Access Of New Jobs </h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                  </button>
+                </div>
+                <!-- /.card-tools -->
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body" style="display: block;">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Job Card</th>
+                    <th>Customer </th>
+                    <th>Total (TSH)</th>
+                    <th>Payment </th>
+                    <th>Status</th>
+                    <th>Arrival Date</th>                    
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                   {% if orders %}
+                          {% for order in orders %}
+                           <tr>
+                             <td><b class="text-success">JC{{ order.id }}</b></td>
+                             
+                             <td>
+                              <b>{{ order.customer.customer_name }}</b>
+
+                             </td>
+
+                             <td>
+                              <b>{{ order.total_amount|intcomma }} {{ order.currence_type }}</b> </td>
+
+                             <td>{% if order.payment_status == 'Paid' %}
+                                <b class="text-success">Paid</b>
+                                {% else %}
+                                 <b class="text-info">Unpaid</b>
+                                 {% endif %}
+                             </td>
+
+                             <td>{% if order.work_status == 'Accepted' %}
+                                <b class="text-success">Accepted</b>
+                                {% elif order.work_status == 'Denied' %}
+                                 <b class="text-danger">Denied</b>
+                                 {% else %}
+                                 <b class="text-info">{{order.work_status }}</b>
+                                 {% endif %}
+
+
+                             </td>
+                             <td>{{ order.arrival_date|date }}</td>
+                             <td>
+                               <a class="btn  btn-success btn-sm" href="{% url 'office:order_detail' order.id %}" title="Details"><b class="fa fa-eye"></b> </a> 
+                               <a class="btn  btn-info btn-sm" href="{% url 'office:update_order' order.id %}" title="Update Order Details"><b class="fa fa-edit"></b> </a> 
+                             
+                              <a class="btn btn-danger btn-sm delete_post" href="{% url 'office:delete_order'  order.id %}" title="Delete"><b class="fa fa-trash"></b> </a> 
+
+                              
+
+                            </td>
+                           </tr>
+                           {% endfor %}
+                           {%  else  %}
+                           <tr>
+                             <td colspan="7"><p class="text-success"><b>Hello {{ request.user.get_full_name}}!,</b><b class="danger"> No new job yet!</b></p></td>
+                           </tr>
+                           {% endif %}
+                 
+                  </tbody>
+                 
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+           </div>
+           <div class="col-sm-6 col-12"></div>
+          </div>
+          <div class="col-lg-3">
+
+          
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>{{canceled}}</h3>
+
+                <p>Canceled Works</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-print"></i>
+              </div>
+              <a href="{% url 'office:canceled_work' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+           <!-- small box -->
+             <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{paid}}</h3>
+
+                <p>Paid Invoices</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-print"></i>
+              </div>
+              <a href="{% url 'office:paid_invoices' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            <br>
+             <div class="small-box bg-secondary">
+              <div class="inner">
+                <h3>{{profoma}}</h3>
+
+                <p>Profoma Invoices </p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-print"></i>
+              </div>
+              <a href="{% url 'office:unpaid_invoices' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+    {% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the order?');
+                  })
+    </script>
+{% endblock page_scripts %}

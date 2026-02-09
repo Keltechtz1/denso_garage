@@ -1,0 +1,229 @@
+{% extends 'work/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{ page_title }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'work:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">{{ page_title }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+
+      <section class="content">
+      <div class="container-fluid">
+        {% if messages %}
+                         {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }}   alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <p><strong>Notification!</strong></p>
+                              <p>{{ message }}.</p>
+                         </div>
+                         {% endfor %}
+                      {% endif %}
+        <div class="row">
+          <!-- left column -->
+          <div class="col-md-7 col-sm-12 col-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <b class="fa fa-user-plus"></b>  Update Profile</h3>
+              </div>
+               <form method="POST" action="." class="card-body row" enctype="multipart/form-data">
+                         {% csrf_token %} 
+                                    <!-- First name -->
+                                     <div class="col-12 mb-30">
+                                      {% if not request.user.profile.region %}
+                                        <h2 class="text-info">Step One</h2>
+                                        <p class="lead text-danger"><b>Fill out your personal information below to proceed with another step.</b></p>
+                                         <hr>
+                                        {% endif %}
+                                     
+                                     
+                                     </div>
+                                    <div class="col-md-6 col-12 mb-30">
+                                        <label class="form-label" for="fname">First Name</label>
+                                        <input type="text" id="fname" class="form-control" value="{{ request.user.first_name }}" placeholder="First Name" name="first_name" required />
+                                    </div>
+                                    <!-- Last name -->
+                                    <div class="col-md-6 col-12 mb-30">
+                                        <label class="form-label" for="lname">Last Name</label>
+                                        <input type="text" id="lname" value="{{ request.user.last_name }}" class="form-control" placeholder="Last Name" name="last_name" required />
+                                    </div>
+                                    <!-- Phone -->
+                                    <div class="col-md-6 col-12 mb-30">
+                                        <label class="form-label" for="phone">Email</label>
+                                        <input type="text" id="phone" value="{{ request.user.email }}" class="form-control" placeholder="Email " name="email" required />
+                                    </div>
+                                    <!-- Phone -->
+                                    <div class="col-md-6 col-12 mb-30">
+                                        <label class="form-label" for="phone">Phone</label>
+                                        <input type="text" id="phone" value="{{ request.user.profile.phone }}" class="form-control" placeholder="Phone" name="phone" required />
+                                    </div>
+
+                                     <!-- State -->
+                                     <div class="col-md-12 col-12 mb-30">
+                                        <label class="form-label" for="birth">Address</label>
+                                        <input class="form-control" type="text" placeholder="address" id="birth" value="{{ request.user.profile.address }}" name="address" required />
+                                    </div>
+                                    
+                                    <!-- State -->
+
+                                    <!-- Birthday -->
+                                    <div class="col-md-6 col-12 mb-30">
+                                        <label class="form-label" for="birth">Region</label>
+                                        <input class="form-control" type="text" placeholder="region" id="birth" value="{{ request.user.profile.region }}" name="region" required />
+                                    </div>
+
+                                   
+
+                                    <div class="col-md-6 col-12 mb-30">
+                                      <div class="form-group">
+                                        <label class="form-label" for="birth">Gender </label>
+                                        <select class="form-control" name="gender">
+                                          <option class="{{ request.user.profile.gender }}">{{ request.user.profile.gender }}</option>
+                                          <option value="Male">Male</option>
+                                          <option value="Female">Female</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    
+                                  
+
+                                  
+                                   
+                                    
+
+                                    <div class="col-md-4 col-12 mb-30">
+                                    <div class="form-group">
+                                        <label><b>Photo</b> </label>
+                                       <input type="file" value="{{ request.user.profile.photo.url }}" name="photo">
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-8 col-12">
+                                    <div class="d-flex align-items-center mb-4 mb-lg-0">
+                                    <img src="{{ request.user.profile.photo.url }}" id="img-uploaded" class="avatar-xl rounded-circle" height="100" width="100" alt="" />
+                                    <div class="ms-3">
+                                        <h4 class="mb-0">Profile Picture</h4>
+                                        <p class="mb-0 ml-3">
+                                            PNG or JPG no bigger than 800px wide and tall.
+                                        </p>
+                                    </div>
+                                </div>
+                                </div> 
+
+                                <div class="col-12">
+                                  <div class="form-group">
+                                  <label><b>Bio</b></label>
+                                  <textarea class="form-control" name="bio">{{ request.user.profile.bio }}</textarea>
+                                </div>
+                                </div>
+
+                                    
+                                    <div class="col-12">
+                                        <!-- Button -->
+                                        <button class="btn btn-primary" type="submit">
+                                            Update Profile
+                                        </button>
+                                    </div>
+                        </form>
+            
+            </div>
+            <!-- /.card -->
+
+          </div>
+          <!--/.col (left) -->
+          <!-- right column -->
+          <div class="col-md-5">
+           <div class="card card-widget widget-user">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header text-white"
+                   style="background: url('{% static 'mg/dist/img/photo1.png' %}') center center;">
+                <h3 class="widget-user-username text-right">Owner</h3>
+                <h5 class="widget-user-desc text-right">{{  request.user.get_full_name }}</h5>
+              </div>
+              <div class="widget-user-image">
+                <img class="img-rounded" src="{{  request.user.profile.photo.url }}" alt="{{ request.user.username }}">
+              </div>
+              <div class="card-footer">
+               
+                <div class="row">
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <span class="description-text"> Densomotors</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                      <span class="description-text">{{ request.user.profile.role }}</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4">
+                    <div class="description-block">
+                      <span class="description-text">Profile </span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <div class="card-body">
+                <h4>Contact Info</h4>
+                <p class="lead">
+                  <b class="fa fa-envelope text-info"></b> <b>Email : </b>{{ request.user.email}} <br>
+                  <b class="fa fa-phone text-info"></b> <b>Phone : </b>{{ request.user.profile.phone}} <br>
+                  <b class="fa fa-user text-info"> </b> <b> Gender :</b> {{ request.user.profile.gender }} <br>
+                  <br>
+                 
+                  <b class="fa fa-home text-primary"></b> <b>Address :</b> {{ request.user.profile.address}} <br>
+                  <b class="fa fa-map-marker text-primary"> </b> <b> Region :</b> {{ request.user.profile.region }} <br>
+                  <br>
+                  <b class="fa fa-calendar text-primary"> </b> <b> Role :</b> {{ request.user.role }} 
+                  <br>
+                  <b class="fa fa-calendar text-primary"> </b> <b> Join on  :</b> {{ request.user.reg_date }} 
+                </p>
+                <p class="lead"><b>Bio </b><br>
+                  {{request.user.profile.bio|safe }}
+                </p>
+
+              </div>
+              
+            </div>
+            
+          </div>
+          <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+
+
+    {% endblock  %}
+
+    {% block page_script%}
+    <script type="text/javascript">
+
+    </script>
+    {% endblock page_script%}

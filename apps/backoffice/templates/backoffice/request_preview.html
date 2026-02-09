@@ -1,0 +1,211 @@
+{% extends 'mg/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Request Preview </h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+               <li class="breadcrumb-item"><a href="{% url 'office:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">Preview</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+     <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+           
+
+
+            <!-- Main content -->
+            <div class="invoice p-3 mb-3">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fas fa-globe"></i> Request
+                    <small class="float-right">Date: {{ order.start_date|date}}</small>
+                  </h4>
+                  <hr>
+                  {% if order.payment_status == 'Paid' %}
+                  <img src="">
+                  {% else %}
+                  <img src="{% static 'profoma_title.png' %}" class="img-fluid">
+                  <hr>
+
+                  {% endif %}
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- info row -->
+              <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                  <h4>From</h4>
+                  <address>
+                    <strong>Denso Motor Spares (T) LTD</strong><br>
+                    12166 Arusha, <br>
+                    Arusha Tanzania <br>
+                    TEL 1: +255 27 250 3532<br>
+                    TEL 2: +255 27 250 2379<br>
+                    FAX : +255 27 254 8359<br>
+                    Email: sales@densomotors.com
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <h4>To</h4>
+                  <address>
+                    <strong>{{ order.vendor }}</strong><br>
+                    Address : {{ order.vendor.vendor_address}}<br>
+                    Phone : {{ order.vendor.vendor_phone }}<br>
+                    Email : {{ order.vendor.vendor_email }}<br>
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <b>Invoice # : INV{{ order.id}}</b><br>
+                  <br>
+                  <b>Date :</b> {{ order.start_date|date}}<br>
+                  <b>Status :</b> {% if order.payment_status == 'Paid' %}
+                                <b class="text-success">Paid</b>
+                                {% else %}
+                                 <b class="text-danger">Unpaid</b>
+                                 {% endif %}
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-12">
+                  <h4>Descriptions </h4>
+                  <hr>
+                  {{ order.description|safe }}
+
+                </div>
+              </div>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      
+                      <th>Item</th>
+                      <th>Amount</th>
+                      <th>Quantity</th>
+                      <th>Unit</th>
+                      <th>Subtotal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {% if order.order_items %}
+                      {% for item in order.order_items %}
+                    <tr>
+                      
+                      <td>{{ item.item }}</td>
+                      <td>{{ item.amount|intcomma }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>{{ item.unit }}</td>
+                      <td>{{ item.total_amount }}</td>
+                      
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                      <td colspan="5"> Add items... </td>
+                      
+                    </tr>
+                    {% endif %}
+                   
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <div class="row">
+                <!-- accepted payments column -->
+                <div class="col-6">
+                  <p class="lead">Payment Methods:</p>
+             
+
+                  <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                    We accept cash payment, bank transfer or mobile payment
+                  </p>
+                </div>
+                <!-- /.col -->
+                <div class="col-6">
+                  
+                  <div class="table-responsive">
+                    <table class="table">
+                     
+                      <tr>
+                        <th>Total:</th>
+                        <td><b>{{ order.total_amount|intcomma }} TZH</b></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- this row will not appear when printing -->
+              <div class="row no-print">
+                <div class="col-12">
+                  <a href="{% url 'office:invoice_print' order.id %}" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print Invoice</a>
+                 
+                
+                </div>
+              </div>
+            </div>
+            <!-- /.invoice -->
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+
+{% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the post?');
+                  })
+    </script>
+{% endblock page_scripts %}
+  

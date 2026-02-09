@@ -1,0 +1,145 @@
+{% extends 'work/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{ page_title }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'office:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">{{ page_title }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+                       {% if messages %}
+                         {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }}   alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <p><strong>Notification!</strong></p>
+                              <p>{{ message }}.</p>
+                         </div>
+                         {% endfor %}
+                      {% endif %}
+      <div class="container-fluid row">
+        <!-- Small boxes (Stat box) -->
+       
+
+           <div class="col-lg-12">
+             <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">{{ page_title }}</h3>
+                  <span class="float-right"><a href="{%  url 'work:dashboard' %}" class="btn btn-secondary btn-sm"><b class="fa fa-envelope-open"></b> New Customer</a></span>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>ID </th>
+                    <th>Customer </th>
+                    <th>Driver</th>
+                    <th>Address</th>
+                    <th>Added Date</th>                    
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                   {% if customers %}
+                          {% for customer in customers %}
+                           <tr>
+                             <td><b class="text-danger">CUST{{ customer.id }}</b></td>
+                             <td><b>Name : </b>{{ customer.customer_name }}<br>
+                             <b>Phone:</b>{{ customer.customer_phone }}<br>
+                              <b>Email:</b>{{ customer.customer_email }}</td>
+                            
+                             <td>
+                                <b>Name : </b>{{ customer.driver_name }}<br>
+                                <b>phone : </b>{{ customer.driver_phone }}
+                             </td>
+
+                             <td>{{ customer.customer_address }}
+
+                             </td>
+
+                             <!-- <td>{% if customer.status == 1 %}
+                                <b class="text-success">Published</b>
+                                {% else %}
+                                 <b class="text-info">Draft</b>
+                                 {% endif %}
+
+
+                             </td> -->
+                             <td>{{ customer.created_at|date }}</td>
+                             <td>
+                              <a href="{% url 'work:orders' customer.id %}" class="btn btn-info btn-sm" ><b class="fa fa-eye"></b> View</a> &nbsp;
+                              <a class="btn  btn-danger btn-sm delete_post" href="" title="Delete"><b class="fa fa-trash"></b> </a> 
+
+                              <!-- Modal -->
+                              
+
+                            </td>
+                           </tr>
+                           {% endfor %}
+                           {%  else  %}
+                           <tr>
+                             <td colspan="6"><p class="text-danger"><b>No customers yet!</b></p></td>
+                           </tr>
+                           {% endif %}
+                 
+                  </tbody>
+                 
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+           </div>
+           
+      
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+
+{% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the post?');
+                  })
+    </script>
+{% endblock page_scripts %}
+  

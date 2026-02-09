@@ -1,0 +1,45 @@
+from django.urls import path
+from django.contrib.auth import views
+from django.contrib.auth import views as auth_views #import this
+from . import views
+app_name = 'office'
+urlpatterns = [
+	path('',views.office_dashboard, name='dashboard'),
+	path('',views.staff_view, name='staff'),
+	path('customers/',views.customerView, name='customers'),
+	path('orders/all/',views.allOrderView, name='orders'),
+	path('orders/new/',views.newOrderView, name='new_order'),
+	path('orders/active-jobs/',views.activeWorkView, name='active_work'),
+	path('orders/completed-jobs/',views.completedWorkView, name='completed_work'),
+	path('orders/canceled-jobs/',views.canceledWorkView, name='canceled_work'),
+	path('orders/new-jobs/',views.newJobView, name='new_job'),
+	path('order/<int:order>/delete/',views.delete_order, name='delete_order'),
+	path('order/<int:order>/management/',views.update_order, name='update_order'),
+	path('order/<int:order>/order-detail/',views.order_detail, name='order_detail'),
+	path('order/<int:order>/<int:item>/order-detail/',views.updateItem, name='update_item'),
+	path('order/<int:customer>/customer-orders/',views.ordersView, name='orders'),
+	# vendor url
+	path('vendor/add-new/',views.addVendor, name='add_vendor'),
+	path('vendor/<int:vendor>/update/',views.updateVendor, name='update_vendor'),
+	path('vendor/<int:vendor>/invoice/',views.vendorInvoice, name='vendor_invoice'),
+	path('vendor/<int:order>/invoice-details/',views.vendor_invoice_detail, name='inv_detail'),
+	path('vendor/<int:order>/order-comments/',views.vendorComment, name='vendor_comment'),
+	path('vendor/<int:vendor>/<int:order>/update-request/',views.UpdateVendorInvoice, name='update_request'),
+	path('vendor/<int:inv>/request-preview/',views.requestPreview, name='request_preview'),
+	path('vendor/all-requests/',views.requestInvoicesView, name='all_requests'),
+	path('vendor/<int:order>/<int:item>/request-detail/',views.updateVendorItem, name='update_vendor_item'),
+	# invoices
+	path('invoices/paid-invoices/',views.paidInvoicesView, name='paid_invoices'),
+	path('invoices/unpaid-invoices/',views.unpaidInvoicesView, name='unpaid_invoices'),
+	path('invoices/<int:inv>/preview/',views.previewInvoice, name='preview'),
+	path('invoices/<int:inv>/print/',views.invoicePrint, name='invoice_print'),
+	# 
+	path('my-profile/',views.my_profile, name='my_profile'),
+	#
+	path('requisitions/all/', views.allRequisition, name = 'all_requisitions'),
+	path('requisition/<int:requisition>/details/',views.requisitionDetails, name='requisition_details'),
+	path('requisition/<int:requisition>/update/',views.updateRequisition, name='update_requisition'),
+	path('requisition/<int:req>/requisition-pdf/',views.requisitionPrint, name='requisition_pdf'),
+	path('requisition/<int:requisition>/<int:desc>/update-item/',views.updateRequisitionItem, name='reqsupdate_item'),
+	]
+

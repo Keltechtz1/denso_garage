@@ -1,0 +1,201 @@
+{% extends 'work/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Request Preview </h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+               <li class="breadcrumb-item"><a href="{% url 'work:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">Preview</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+     <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+           
+
+
+            <!-- Main content -->
+            <div class="invoice p-3 mb-3">
+              <!-- title row -->
+               <div class="row">
+                <div class="col-md-3 col-3">
+                  <br><br>
+                  <img src="{% static 'logo.png' %}" width="100%">
+                </div>
+                <div class="col-md-9 col-4">
+                  <br>
+                  <h4 class="text-center">P.O.Box 12166, Arusha - Tanzania<br>
+                    Tel: +255 754 308 230 / +255 710 153 397 <br>
+                    E-Mail : sales@donsomotors.com / workshop@donsomotors.com<br>
+                  website : www.donsomotors.com</h4>
+                
+                  <hr>
+                  <h4 class="text-center" style=" text-transform: uppercase;"><b>{{ order.order_type}} Order</h4>
+                    <h3 align="right">
+                    <i class="fas fa-checked"></i> ORDER NUMBER : <b>DO-{{ order.id }}</b>
+                    
+                  </h3>
+                </div>
+               
+                <!-- /.col -->
+              </div>
+                <!-- /.col -->
+              </div>
+              <!-- info row -->
+              <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                   <h4>To</h4>
+                  <address>
+                    <strong>Vendor Name : {{ order.vendor.vendor_name }}</strong><br>
+                    Address : {{ order.vendor.vendor_address}}<br>
+                    Phone : {{ order.vendor.vendor_phone }}<br>
+                    Email : {{ order.vendor.vendor_email }}<br>
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                 
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  
+                  <h4><b>Date :</b> {{ order.start_date|date}}<br></h4>
+                 
+                </div>
+                <!-- /.col -->
+               
+              </div>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      
+                      <th>ITEM</th>
+                      <th>UNIT</th>
+                      <th>QUANTITY</th>
+                       <th>AMOUNT @</th>
+                      
+                      <th>TOTAL </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {% if order.order_items %}
+                      {% for item in order.order_items %}
+                    <tr>
+                      
+                      <td>{{ item.item }}</td>
+
+                       <td>{{ item.unit }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>{{ item.amount|intcomma }}</td>
+                      <td>{{ item.total_amount }}</td>
+                      
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                      <td colspan="5"> Add items... </td>
+                      
+                    </tr>
+                    {% endif %}
+                   
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <div class="row">
+                <!-- accepted payments column -->
+                <div class="col-6">
+                  <p class="lead">Payment Methods:</p>
+             
+
+                  <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                    We accept cash payment, bank transfer or mobile payment
+                  </p>
+                </div>
+                <!-- /.col -->
+                <div class="col-6">
+                  
+                  <div class="table-responsive">
+                    <table class="table">
+                     
+                      <tr>
+                        <th>TOTAL COST:</th>
+                        <td><b>{{ order.total_amount|intcomma }} TZH</b></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- this row will not appear when printing -->
+              <div class="row no-print">
+                <div class="col-12">
+                  <a href="{% url 'work:print_request' order.id %}" rel="noopener" target="_blank" class="btn btn-danger"><i class="fas fa-print"></i> Print Request</a>
+                 
+                
+                </div>
+              </div>
+            </div>
+            <!-- /.invoice -->
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+
+{% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the post?');
+                  })
+    </script>
+{% endblock page_scripts %}
+  

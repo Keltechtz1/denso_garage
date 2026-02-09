@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'mg/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="{% static 'mg/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{% static 'mg/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="{% static 'mg/plugins/jqvmap/jqvmap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'mg/dist/css/adminlte.min.css' %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'mg/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{% static 'mg/plugins/daterangepicker/daterangepicker.css' %}">
+  <!-- summernote -->
+  <link rel="stylesheet" href="{% static 'mg/plugins/summernote/summernote-bs4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'mg/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'mg/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'mg/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+   <link href="{% static 'icon.png' %}" type="img/x-icon" rel="shortcut icon">
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+    <!-- Content Header (Page header) --> 
+    <!-- Main content -->
+     <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+           
+
+
+            <!-- Main content -->
+            <div class="invoice p-3 mb-3">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-md-3 col-3">
+                  <br><br>
+                  <img src="{% static 'logo.png' %}" width="100%">
+                </div>
+                <div class="col-md-9 col-4">
+                  <br>
+                  <h4 class="text-center">P.O.Box 12166, Arusha - Tanzania<br>
+                    Tel: +255 754 308 230 / 2503532 <br>
+                    E-Mail : sales@donsomotors.com / workshop@donsomotors.com<br>
+                  website : www.donsomotors.com</h4>
+                
+                  <hr>
+                  {% if order.payment_status == 'Paid' %}
+                  <h4 class="text-center"><b>DENSO MOTOR SPARES (T) LTD INVOICE</h4>
+                    {% else  %}
+                    <h4 class="text-center"><b>DENSO MOTOR SPARES (T) LTD PROFOMA INVOICE</h4>
+                    {% endif %}
+                   
+                </div>
+               
+                <!-- /.col -->
+              </div>
+              <hr>
+              <!-- info row -->
+             <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                  <h4>CUSTOMER DETAILS</h4>
+                        <hr>
+                        <address>
+                          <b>Customer Name</b> :  <strong>{{ order.customer.customer_name }}</strong><br>
+                          Customer Phone : {{ order.customer.customer_phone }}<br>
+                          Address : {{ order.customer.customer_address}}<br>
+                          Email : {{ order.customer.customer_email }}<br>
+                          Driver Name: {{ order.customer.driver_name }}<br>
+                          Driver Phone : {{ order.customer.driver_phone }}
+                        </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <h4> CAR INFORMATION</h4>
+                        <hr>
+                        <address>
+                          <b>Vehicle Type </b> :  <strong>{{ order.car_name }}</strong><br>
+                          Plate No : {{ order.plate_no }}<br>
+                          Model No : {{ order.model_no }}<br>
+                          Chassis No : {{ order.chassis_no }}<br>
+                          Kms : {{ order.number_of_km }}<br>
+                        </address>
+                  
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <h4> WORKSHOP DETAILS</h4>
+                        <hr>
+                        <address>
+
+                          <b>Arrival Date </b> :  {{ order.arrival_date }} <br>
+                          Departure Date  : {{ order.departure_date }}<br>
+                          Amount : <b class="text-primary">{{ order.total_amount|intcomma}} TSH</b><br>
+                          Payment Method   : <b class="text-info">{{ order.payment_method }}</b><br>
+                          Payment status   :{% if order.payment_status == 'Paid' %}
+                                <b class="text-success">Paid</b>
+                                {% else %}
+                                 <b class="text-danger">Unpaid</b>
+                                 {% endif %}
+                        </address>
+
+                  
+                  
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      <th>Qty</th>
+                      <th>Product</th>
+                      <th>Serial #</th>
+                      <th>Description</th>
+                      <th>Subtotal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {% if order.order_items %}
+                      {% for item in order.order_items %}
+                    <tr>
+                      <td>{{ item.quantity }}</td>
+                      <td>{{ item.parts_no }}</td>
+                      <td>{{ item.item }}</td>
+                      <td>{{ item.unit }}</td>
+                      <td>{{ item.amount|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                      <td colspan="4"> no added items </td>
+                      
+                    </tr>
+                    {% endif %}
+                   
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <div class="row">
+                <!-- accepted payments column -->
+                <div class="col-6">
+                  <p class="lead">Payment Methods:</p>
+             
+
+                  <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                    We accept cash payment, bank transfer or mobile payment
+                  </p>
+                </div>
+                <!-- /.col -->
+                <div class="col-6">
+                  
+                  <div class="table-responsive">
+                    <table class="table">
+                     
+                      <tr>
+                        <th>Total:</th>
+                        <td><b>{{ order.total_amount|intcomma }} TZH</b></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- this row will not appear when printing -->
+              <div class="row no-print">
+                <div class="col-12">
+             
+                 
+                
+                </div>
+              </div>
+            </div>
+            <!-- /.invoice -->
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  
+   
+   <!-- jQuery -->
+<script src="{% static 'mg/plugins/jquery/jquery.min.js' %}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{% static 'mg/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'mg/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- ChartJS -->
+<script src="{% static 'mg/plugins/chart.js/Chart.min.js' %}"></script>
+<!-- Sparkline -->
+<script src="{% static 'mg/plugins/sparklines/sparkline.js' %}"></script>
+<!-- JQVMap -->
+<script src="{% static 'mg/plugins/jqvmap/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'mg/plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+<!-- jQuery Knob Chart -->
+<script src="{% static 'mg/plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+<!-- daterangepicker -->
+<script src="{% static 'mg/plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'mg/plugins/daterangepicker/daterangepicker.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'mg/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<!-- Summernote -->
+<script src="{% static 'mg/plugins/summernote/summernote-bs4.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'mg/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'mg/dist/js/adminlte.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'mg/dist/js/demo.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'mg/dist/js/pages/dashboard.js' %}"></script>
+<script type="text/javascript" src="{% static 'mg/ckeditor/ckeditor.js' %}"></script>
+<script src="{% static 'mg/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'mg/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'mg/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'mg/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'mg/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+ <script type="text/javascript" src="{% static 'ckeditor/ckeditor.js' %}"></script>
+
+</body>
+</html>
+
+
+ <script>
+  window.addEventListener("load", window.print());
+</script>
+
+  

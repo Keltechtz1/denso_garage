@@ -1,0 +1,207 @@
+{% extends 'mg/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{ page_title }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'office:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">{{ page_title }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+                       {% if messages %}
+                         {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }}   alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <p><strong>Notification!</strong></p>
+                              <p>{{ message }}.</p>
+                         </div>
+                         {% endfor %}
+                      {% endif %}
+      <div class="container-fluid row">
+        <!-- Small boxes (Stat box) -->
+       
+
+           <div class="col-lg-6">
+            <div class="card card-info">
+              <div class="card-header">
+                <h1 class="card-title">Requisition Info</h1>
+                
+              </div>
+              <div class="card-body"> 
+              <img src="{% static 'reqs_cover.png' %}" class="img-fluid">     
+                    
+                     <p> <b>DATE :</b> {{ order.created_at|date }} </p>
+                      <p><b>NAME :</b> {{ order.name}}  </p>
+                      <p><b>MAKE :</b> {{ order.make}}  </p>
+                      <p><b>REG  :</b> {{ order.id}}  </p>
+                      <p><b>FROM :</b> {{ order.requisition_from}}  </p>
+                      <p><b>TO  :</b> {{ order.requisition_to}}  
+                          <span class="float-right">
+                                Total Remarks : <b class="text-danger">{{ order.total_amount|intcomma }} TZS</b> 
+                          </span>
+                                        
+                      </p>
+        
+                
+              </div>
+              <div class="card-footer">
+                {% if order.request_by == request.user %}
+                 <a href="{% url 'office:update_requisition' order.id %}" class="btn btn-info">Update Requisition Info </a>
+                 <a href="{% url 'office:requisition_pdf' order.id  %}" class="btn btn-danger"  rel="noopener" target="_blank"><b class="fa fa-print"></b> Print</a>
+
+                {% endif %}
+              </div>
+            </div>
+            
+             
+
+
+
+           </div>
+          
+           <div class="col-lg-6">
+            
+            <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">Description Form</h3>
+                
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <h4>Add Items</h4>
+                 <form class="form card-body" method="POST"  enctype="multipart/form-data">
+               {% csrf_token %} 
+              <div class="row">
+                {{ form.media }}
+                 <div class="col-lg-12 col-sm-12 col-12">
+                      {{ form.hq_feedback|as_crispy_field }}
+                    </div>
+                    
+                    
+                   
+              </div>
+              
+               <div class="form-actions">
+                <button type="submit" class="btn btn-success">
+                  <i class="fa fa-save"></i> Save Details
+                </button>
+              </div> 
+          </form>
+                
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+           </div>
+           <div class="col-lg-12">
+             <div class="card">
+               <div class="card-body">
+                 <div class="table-responsive">
+                  <table id="example1" class="table table-bordered table-striped">
+                  
+
+                                            <thead>
+                                              <tr>
+                                                <th>ITEM CODE</th>
+                                                <th>DESCRIPTION</th>
+                                                <th>SUPPLIER</th>
+                                                <th>UNIT </th>
+                                                <th>QUANTITY</th>
+                                                <th>REMARKS</th>
+                                                <th>HQ FEEDBACK</th>
+                                                <th>ACTION</th>
+                                              </tr>
+                                            </thead>
+                                           
+                                          <tbody>
+                                            {% if order.ritems  %}
+                                            {% for item in order.ritems  %}
+                                            <tr>
+                                              <td>{{ forloop.counter }}</td>
+                                              <td>{{ item.item}}</td>
+                                              <td>{{ item.supplier}}</td>
+                                              <td>{{ item.unit}}</td>
+                                              <td>{{item.quantity}}</td>
+                                              <td>{{ item.remarks|intcomma}}</td>
+                                              <td>{{ item.hq_feedback}}</td>
+                                              <td>
+                                                <a href="{% url 'office:reqsupdate_item' order.id item.id %}" class="btn btn-info btn-sm" title="Edit"><b class="fa fa-edit"></b></a>
+                                                <a href="" class="btn btn-danger btn-sm" title="Remove"><b class="fa fa-trash"></b></a>
+                                              </td>
+                                            </tr>
+                                            {% endfor %}
+
+                                            {% else  %}
+                                            <tr>
+                                              <td colspan="7"><p>No items added yet <span class="float-right">
+                                                <a href="" class="btn btn-info">Add Items</a>
+                                              </span></p></td>
+                                            </tr>
+
+                                            {% endif %}
+
+                                          </tbody>
+                 
+                  
+                </table>
+                <hr>
+                 <p>Requested by <b>{{ order.request_by }}</b> <span class="text-center">Issued By <b>{{ order.issued_by }}</b></span></p>
+                  <p>Authorised by <b>{{ order.authorized_by}}</b></p>
+
+                </div>
+               </div>
+             </div>
+           </div>
+           
+      
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+
+{% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the post?');
+                  })
+    </script>
+{% endblock page_scripts %}
+  

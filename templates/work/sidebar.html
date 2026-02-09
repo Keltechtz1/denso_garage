@@ -1,0 +1,251 @@
+{% load static %}
+ <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="" class="brand-link">
+      <img src="{% static 'icon.png' %}" alt="GMG" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">DENSO</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{{ request.user.profile.photo.url }}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="" class="d-block">{{ request.user.username }}  </a>
+        </div>
+      </div>
+
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+         <!-- CEO AND ADMIN MENU -->
+          <li class="nav-item">
+            <a href="{% url 'work:dashboard' %}" class="nav-link  {% if page == 'dashboard' %}active{% endif %}">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Dashboard
+                <!-- <i class="right fas fa-angle-left"></i> -->
+              </p>
+            </a>
+            
+          </li>
+
+          <li class="nav-item">
+            <a href="{% url 'work:customers' %}" class="nav-link {% if page == 'docs' %}active{% endif %}">
+              <i class="nav-icon fa fa-users"></i>
+              <i class=""></i>
+              <p>Customers</p>
+            </a>
+          </li>
+          
+
+          
+          <li class="nav-item">
+            <a href="#" class="nav-link {% if main_page == 'orders' %}active{% endif %}">
+              <i class="nav-icon fas fa-briefcase"></i>
+              <p>
+                Jobs
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-success right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'work:in_review' %}" class="nav-link {% if page == 'in_review' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>In Review  <span class="badge badge-success right"></span></p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'work:completed_not_paid' %}" class="nav-link {% if page == 'completed_not_paid' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Completed not paid <span class="badge badge-danger right"></span></p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{% url 'work:paid_not_completed' %}" class="nav-link {% if page == 'paid_not_completed' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Paid not completed<span class="badge badge-info right"></span></p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{% url 'work:paid_completed' %}" class="nav-link {% if page == 'paid_completed' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Paid Completed<span class="badge badge-info right"></span></p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{% url 'work:canceled_work' %}" class="nav-link {% if page == 'posts' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Canceled Works<span class="badge badge-info right"></span></p>
+                </a>
+              </li>
+             <!--  <li class="nav-item">
+                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Sidebar</p>
+                </a>
+              </li> -->
+            </ul>
+          </li>
+
+            <li class="nav-item">
+            <a href="#" class="nav-link {% if main_page == 'invoices' %}active{% endif %}">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>
+                 Invoices
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-success right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+               <li class="nav-item">
+                <a href="{% url 'work:paid_invoices' %}" class="nav-link {% if page == 'paid' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Paid  Invoices <span class="badge badge-success right"></span></p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{% url 'work:unpaid_invoices' %}" class="nav-link {% if page == 'unpaid' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Unpaid  Invoices <span class="badge badge-success right"></span></p>
+                </a>
+              </li>
+
+         
+           
+            
+             <!--  <li class="nav-item">
+                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Sidebar</p>
+                </a>
+              </li> -->
+            </ul>
+          </li>
+
+           <li class="nav-item">
+            <a href="#" class="nav-link {% if main_page == 'vendors' %}active{% endif %}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Out Sources
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-success right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'work:add_vendor' %}" class="nav-link {% if page == 'manage_vendor' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Vendor  <span class="badge badge-success right"></span></p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'work:all_requests' %}" class="nav-link {% if page == 'requests' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Requests   <span class="badge badge-danger right"></span></p>
+                </a>
+              </li>
+            
+             <!--  <li class="nav-item">
+                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Sidebar</p>
+                </a>
+              </li> -->
+            </ul>
+          </li>
+
+            <li class="nav-item">
+            <a href="#" class="nav-link {% if main_page == 'requisitions' %}active{% endif %}">
+              <i class="nav-icon fa fa-list"></i>
+              <p>
+                Requisitions
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-success right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'work:new_requisition' %}" class="nav-link {% if page == 'manage_requisition' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>New Requisition  <span class="badge badge-success right"></span></p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'work:my_requisitions' %}" class="nav-link {% if page == 'requisitions' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>My Requisitions   <span class="badge badge-danger right"></span></p>
+                </a>
+              </li>
+            
+             <!--  <li class="nav-item">
+                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fixed Sidebar</p>
+                </a>
+              </li> -->
+            </ul>
+          </li>
+
+           <li class="nav-item">
+            <a href="#" class="nav-link {% if main_page == 'reports' %}active{% endif %}">
+              <i class="nav-icon fa fa-list"></i>
+              <p>
+                Reports
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-success right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'work:general_report' %}" class="nav-link {% if page == 'general' %}active{% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>General Report  <span class="badge badge-success right"></span></p>
+                </a>
+              </li>
+             
+            </ul>
+          </li>
+         
+<li class="nav-item">
+            <a href="{% url 'work:my_profile' %}" class="nav-link {% if page == 'profile' %}active{% endif %}">
+              <i class="nav-icon fa fa-user"></i>
+              <i class=""></i>
+              <p>My Profile</p>
+            </a>
+          </li>
+        
+          
+        
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="nav-icon far fa-user text-info"></i>
+              <p>Logout</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

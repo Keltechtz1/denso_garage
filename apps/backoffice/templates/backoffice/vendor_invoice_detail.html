@@ -1,0 +1,349 @@
+{% extends 'mg/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{ page_title }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'office:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">{{ page_title }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+                       {% if messages %}
+                         {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }}   alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <p><strong>Notification!</strong></p>
+                              <p>{{ message }}.</p>
+                         </div>
+                         {% endfor %}
+                      {% endif %}
+      <div class="container-fluid row">
+        <!-- Small boxes (Stat box) -->
+       
+
+           <div class="col-lg-6">
+            <div class="card card-info">
+              <div class="card-header">
+                <h1 class="card-title">Vendor Info</h1>
+                
+              </div>
+              <div class="card-body">      
+                    <p>Vendor : <b>{{ order.vendor.vendor_name }}</b></p>
+                    <p>Email : <b>{{ order.vendor.vendor_email }}</b></p>
+                    <p>Phone : <b>{{ order.vendor.vendor_phone }}</b></p>
+                    <p>Address : {{ order.vendor.vendor_address }}</p>
+        
+                
+              </div>
+              <div class="card-footer">
+                 <a href="{% url 'office:update_vendor' order.vendor.id %}" class="btn btn-danger">Update Vendor </a>
+              </div>
+            </div>
+            
+             
+
+
+
+           </div>
+           <div class="col-lg-6">
+             <div class="card direct-chat direct-chat-primary">
+              <div class="card-header">
+                <h3 class="card-title">Chat Place</h3>
+
+                <div class="card-tools">
+                  <span title="3 New Messages" class="badge badge-primary">3</span>
+                  
+                  
+                  
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <p class="text-center text-success">Chat about  {{ order.title }}</p>
+                <hr>
+                <!-- Conversations are loaded here -->
+                <div class="direct-chat-messages">
+                  {% if order.comments %}
+                  <!-- Message. Default to the left -->
+                  {% for  cm in order.comments %}
+                  {% if cm.staff == request.user %}
+                   <div class="direct-chat-msg right">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name float-right">You </span>
+                      <span class="direct-chat-timestamp float-left">{{ cm.post_date|date }}</span>
+                    </div>
+                    <!-- /.direct-chat-infos -->
+                    <img class="direct-chat-img" src="{{ cm.staff.profile.photo.url }}" alt="message user image">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                      {{ cm.comment|safe }}
+                    </div>
+                    <!-- /.direct-chat-text -->
+                  </div>
+
+                  {% else  %}
+                  <div class="direct-chat-msg">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name float-left">{{ cm.staff.get_full_name }}</span>
+                      <span class="direct-chat-timestamp float-right">{{ cm.post_date|date }}</span>
+                    </div>
+                    <!-- /.direct-chat-infos -->
+                    <img class="direct-chat-img" src="{ cm.staff.profile.photo.url }}" alt="message user image">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                      {{ cm.comment|safe }}
+                    </div>
+                    <!-- /.direct-chat-text -->
+                  </div>
+                  {% endif %}
+
+                  <!-- /.direct-chat-msg -->
+
+                 
+                  {% endfor %}
+                  {% else  %}
+
+                  <!-- Message. Default to the left -->
+                  <div class="direct-chat-msg">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name float-left">System</span>
+                    </div>
+                    <!-- /.direct-chat-infos -->
+                    <img class="direct-chat-img" src="{% static 'icon.png' %}" alt="message user image">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                     No chat yet
+                    </div>
+                    <!-- /.direct-chat-text -->
+                  </div>
+                  {% endif %}
+                  <!-- /.direct-chat-msg -->
+
+                 
+
+                </div>
+                <!--/.direct-chat-messages-->
+
+              
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                <form action="{% url 'office:vendor_comment' order.id  %}" method="post">
+                  {% csrf_token %} 
+                  <div class="input-group">
+                    <input type="text" name="comment" placeholder="Type Message ..." class="form-control">
+                    <span class="input-group-append">
+                      <button type="submit" class="btn btn-primary">Send</button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-footer-->
+            </div>
+           </div>
+           <div class="col-lg-12">
+             <br>
+            <div class="card card-secondary">
+              <div class="card-header">
+                <h1 class="card-title">About  Request</h1>
+                <span class="float-right">
+                  <a href="{% url 'office:update_request' order.vendor.id order.id %}" class="btn btn-danger">Update Request</a>
+                  <a href="{% url 'office:request_preview' order.id %}" class="btn btn-success">Preview Request </a>
+                </span>
+              </div>
+              <div class="card-body">
+              
+                <div class="table-response">
+                      <table class="table table-stripted">
+                        <tbody>
+                          <tr>
+                            <td width="50%">
+                              <h5>Type : <b class="text-info">{{ order.order_type }}</b></h5>
+                              
+                            </td>
+                            <td ><h5>Title : <b class="text-info">{{ order.title }}</b></h5></td>
+                           
+                            
+                          </tr>
+
+                             <tr>
+                            <td width="50%">
+                              <p>Work Status  : <b>{{ order.order_type }}</b></p>
+                              <p>Start Date  : <b>{{ order.start_date|date  }}</b></p>
+                              <p>End  Date  : <b>{{ order.end_date|date }}</b></p>
+                              
+                            </td>
+                            <td ><p>Amount  : <b class="text-success">{{ order.total_amount|intcomma }} TSH</b></p>
+                              <p>Payment Status  : <b class="text-info">{{ order.payment_status }} </b></p>
+                               <p>Payment Method  : <b class="text-primary">{{ order.payment_method }} </b></p>
+
+                            </td>
+                           
+                            
+                          </tr>
+
+                          <tr> 
+                            <td colspan="2">
+                              <h5><b>Descriptions</b> </h5>
+                              <hr>
+                             {{ order.description|safe }}
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                  </div>
+                
+              </div>
+            </div>
+            <br>
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">{{ page_title }}</h3>
+                
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <h4>Add Order Items</h4>
+                 <form class="form card-body" method="POST"  enctype="multipart/form-data">
+               {% csrf_token %} 
+              <div class="row">
+                {{ form.media }}
+                 <div class="col-lg-12 col-sm-12 col-12">
+                      {{ form.item|as_crispy_field }}
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-12">
+                      {{ form.unit|as_crispy_field }}
+                    </div>
+
+                     <div class="col-lg-4 col-sm-4 col-12">
+                      {{ form.amount|as_crispy_field }}
+                    </div>
+                     
+
+                    <div class="col-lg-4 col-sm-4 col-12">
+                      {{ form.quantity|as_crispy_field }}
+                    </div>
+
+                    
+                   
+              </div>
+              
+               <div class="form-actions">
+                <button type="submit" class="btn btn-success">
+                  <i class="fa fa-save"></i> Save Details
+                </button>
+              </div> 
+          </form>
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                   
+                    <th>No:</th>
+                    <th>Item & Description</th>
+                    <th>Unit </th>
+                    <th>Amount </th>
+                    <th>Quantity</th>
+                    <th>Total Cost</th>
+                    <th>Date </th>                  
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                   {% if details %}
+                          {% for dts in details %}
+                           <tr>
+                             <td><b class="text-danger"> {{ forloop.counter }} </b></td>
+                             
+                             <td><b class="text-danger">{{ dts.item }}</b></td>
+                             
+                             <td>{{ dts.unit }} </td>
+                             <td>{{ dts.quantity }} </td>
+
+                             <td><b>{{ dts.amount|intcomma }}</b> </td>
+                             <td><b>{{ dts.total_amount|intcomma }} {{ order.currence_type }}</b> </td>
+
+                             
+                             <td>{{ dts.added_date|date }}</td>
+                             <td>
+                               <a class="btn  btn-info btn-sm" href="{% url 'office:update_vendor_item' order.id  dts.id %}" title="Update  Details"><b class="fa fa-edit"></b> </a> 
+                             
+                              <a class="btn  btn-danger btn-sm delete_item" href="#" title="Delete"><b class="fa fa-trash"></b> </a> 
+
+                              
+
+                            </td>
+                           </tr>
+                           {% endfor %}
+                           <tr>
+                             <td colspan="9">
+                                <h3 class="float-right"><b class="text-danger">Total Cost : </b><b>{{ order.total_amount|intcomma }} TZS</b></h3>
+                             </td>
+                           </tr>
+                           {%  else  %}
+                           <tr>
+                             <td colspan="9"><p class="text-danger"><b>No order details yet!</b></p></td>
+                           </tr>
+                           {% endif %}
+                 
+                  </tbody>
+                  
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+           </div>
+           
+      
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+
+{% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the post?');
+                  })
+    </script>
+{% endblock page_scripts %}
+  

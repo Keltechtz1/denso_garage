@@ -1,0 +1,311 @@
+{% extends 'work/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{ page_title }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'office:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">{{ page_title }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+                       {% if messages %}
+                         {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }}   alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <p><strong>Notification!</strong></p>
+                              <p>{{ message }}.</p>
+                         </div>
+                         {% endfor %}
+                      {% endif %}
+      <div class="container-fluid row">
+        <!-- Small boxes (Stat box) -->
+       
+
+           <div class="col-lg-12">
+            <div class="card card-info">
+              <div class="card-header">
+                <h1 class="card-title">Customer Info</h1>
+                <span class="float-right">
+                  <a href="{% url 'work:dashboard' %}" class="btn btn-danger">Add New</a>
+                  <a href="{% url 'work:update_customer' order.customer.id %}" class="btn btn-secondary">Update</a>
+                </span>
+              </div>
+              <div class="card-body">
+              
+                <div class="table-response">
+                      <table class="table table-stripted">
+                        <tbody>
+                          <tr>
+                            <td width="40%">
+                              <h4>Customer  Info</h4>
+                              <hr>
+                              <p><b>Name </b> : <b>{{ order.customer.customer_name }}</b></p>
+                              <p><b>Email</b> : <b>{{ order.customer.customer_email }}</b></p>
+                              <p><b>Phone </b>: <b>{{ order.customer.customer_phone }}</b></p>
+                              <p><b>Address</b> : {{ order.customer.customer_address }}</p>
+                            </td>
+                            <td> 
+                              <h4>Driver Info</h4>
+                              <hr>
+                              <p><b>Name</b> : {{ order.customer.driver_name }}</p>
+                              <p><b>Phone: </b>{{ order.customer.driver_phone }}</p>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                  </div>
+                
+              </div>
+            
+              <div class="card-header">
+                <h1 class="card-title">Car Info</h1>
+                <span class="float-right">
+                  <a href="{% url 'work:update_order' order.id %}" class="btn btn-danger">Update</a>
+                </span>
+               
+              </div>
+              <div class="card-body">
+              
+                <div class="table-response">
+                      <table class="table table-stripted">
+                        <tbody>
+                          <tr>
+                            <td width="40%">
+                              <p>Car Name : <b>{{ order.car_name }}</b></p>
+                              <p>Plate No : <b>{{ order.plate_no }}</b></p>
+                              <p><b class="text-info">Arrival Date </b> : <b>{{ order.arrival_date }}</b></p>
+                              <p><b class="text-danger">Departure Date </b> : <b>{{ order.departure_date }}</b></p>
+                              <hr>
+                              <p>Amount : <b class="text-success">{{ order.total_amount|intcomma}} TSH</b></p>
+                              <p>Payment Method   : <b class="text-success">{{ order.payment_method}}</b></p>
+                              <p>Payment status   : <b class="text-info">{{ order.payment_status}}</b></p>
+                              <p>Work status   : <b class="text-primary">{{ order.work_status}}</b></p>
+                            
+                              
+                            </td>
+                            
+                            <td width="40%">
+                              <p>Model  : <b>{{ order.model_no }}</b></p>
+                              <p>Chassis No  : <b>{{ order.chassis_no }}</b></p>
+                              <p>Car KM  : <b>{{ order.number_of_km }}</b></p>
+                               <p>Job Card No : <b class="text-info">J-{{ order.id}}</b></p>
+                               <p>Job status : <b class="text-success">{{ order.work_status}}</b></p>
+                               
+                               <p>Department (s) : 
+                                 {% if order.department %}
+                                   {% for dpt in order.department.all %}
+                                   <b class="text-danger">{{ dpt.name }}</b>, 
+                                   {% endfor %} 
+                                   {% else %}
+                                   <b> no</b>
+                                 {% endif %}
+                               </p>
+                               <p>Service by : <b>{{order.service_by}}</b></p>
+
+                            <hr>
+                            <a href="{% url 'work:card_preview' order.id %}" class="btn btn-info"><b class="fa fa-print"></b> Job Card (No: J-{{order.id}})</a>&nbsp;  <a href="" class="btn btn-danger"><b class="fa fa-print"></b> Print Invoice</a>
+                            </td>
+                            
+                          </tr>
+                          <tr> 
+                            <td colspan="2">
+                              <h5><b>Inspection Report</b></h5>
+                             {{ order.problem_statement|safe }}
+                            </td>
+                             
+                          </tr>
+
+                        </tbody>
+                      </table>
+                  </div>
+                
+              </div>
+            </div>
+            <br>
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">{{ page_title }}</h3>
+                
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <h4>Add Description</h4>
+                 <form class="form card-body" method="POST"  enctype="multipart/form-data">
+               {% csrf_token %} 
+              <div class="row">
+                {{ form.media }}
+                
+
+                 <div class="col-lg-4 col-sm-4 col-12">
+                      {{ form.item|as_crispy_field }}
+                    </div>
+                     <div class="col-lg-3 col-sm-3 col-12">
+                      {{ form.parts_no|as_crispy_field }}
+                    </div> 
+
+                    <div class="col-lg-2 col-sm-2 col-12">
+                      {{ form.unit|as_crispy_field }}
+                    </div>
+
+                    <div class="col-lg-1 col-sm-1 col-12">
+                      {{ form.quantity|as_crispy_field }}
+                    </div>
+
+                     <div class="col-lg-2 col-sm-2 col-12">
+                      {{ form.amount|as_crispy_field }}
+                    </div>
+                     
+
+
+                     <div class="col-lg-3 col-sm-3 col-12">
+                      {{ form.contractor|as_crispy_field }}
+                    </div> 
+
+                     <div class="col-lg-3 col-sm-3 col-12">
+                      {{ form.item_status|as_crispy_field }}
+                    </div>
+                   
+              </div>
+              
+               <div class="form-actions">
+                <button type="submit" class="btn btn-success">
+                  <i class="fa fa-save"></i> Save Details
+                </button>
+              </div> 
+          </form>
+                <div class="card">
+                   <div class="card-body table-response">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                   
+                    <th>No:</th>
+                    <th>Item </th>
+                     <th>Parts No</th>
+                    <th>Unit </th>
+                    <th>Quantity</th>
+                    <th>Amount </th>
+                    <th>contractor</th>
+                    <th>Total </th>
+                    <th>Status</th>
+                    <th>Date </th>                  
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                   {% if details %}
+                          {% for dts in details %}
+
+                          {% if dts.item_status == 'Not Delivered' %}
+                           <tr class="bg-danger">
+                            {% elif dts.item_status == 'Delivered' %}
+                            <tr class="bg-success">
+                              {% else %}
+                              <tr>
+                                {% endif %}
+                             <td><b> {{ forloop.counter }} </b></td>
+                             <td><b>{{ dts.item }}</b>
+                            
+                              
+                            </td>
+                              <td><b>{{ dts.parts_no }} </b></td>
+                             <td>{{ dts.unit }} </td>
+                             <td>{{ dts.quantity }} </td>
+                             <td><b>{{ dts.amount|intcomma }}</b> </td>
+                             <td>{{ dts.contractor }} </td>
+                             <td><b>{{ dts.total_amount|intcomma }} </b> </td>
+                              <td>
+                                <b>{{dts.work_status }}</b>
+                               
+                                 
+                             </td>
+                              
+                             
+                             <td>{{ dts.added_date|date }}</td>
+                             <td>
+                               <a class="btn  btn-info btn-sm" href="{% url 'work:update_item' order.id  dts.id %}" title="Update  Details"><b class="fa fa-edit"></b> </a> 
+                             
+                              <a class="btn  btn-danger btn-sm delete_item" href="#" title="Delete"><b class="fa fa-trash"></b> </a> 
+
+                              
+
+                            </td>
+                           </tr>
+                           {% endfor %}
+                           <tr>
+                             <td colspan="11">
+                                <p class="float-right"><b class="text-danger">Total Cost : </b><b>{{ order.total_amount|intcomma }} TZS</b></p>
+                             </td>
+                           </tr>
+                           {%  else  %}
+                           <tr>
+                             <td colspan="11"><p class="text-danger"><b>No order details yet!</b></p></td>
+                           </tr>
+                           {% endif %}
+                 
+                  </tbody>
+                </table>
+              </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+             
+
+
+
+           </div>
+           
+      
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+
+{% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the post?');
+                  })
+    </script>
+{% endblock page_scripts %}
+  

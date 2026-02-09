@@ -1,0 +1,194 @@
+{% extends 'work/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{ page_title }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'office:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">{{ page_title }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+                       {% if messages %}
+                         {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }}   alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <p><strong>Notification!</strong></p>
+                              <p>{{ message }}.</p>
+                         </div>
+                         {% endfor %}
+                      {% endif %}
+      <div class="container-fluid row">
+        <!-- Small boxes (Stat box) -->
+       
+
+           <div class="col-lg-12">
+            <div class="card card-info">
+              <div class="card-header">
+                <h1 class="card-title">Customer Info</h1>
+                <span class="float-right">
+                  <a href="{% url 'work:dashboard' %}" class="btn btn-danger">Add New</a>
+                  <a href="{% url 'work:update_customer' customer.id %}" class="btn btn-secondary">Update</a>
+                </span>
+              </div>
+              <div class="card-body">
+              
+               <div class="table-response">
+                      <table class="table table-stripted">
+                        <tbody>
+                          <tr>
+                            <td width="40%">
+                              <h4><b class="text-success fa fa-user">  </b> Customer</h4>
+                              <hr>
+                              <p><b>Name </b> : <b>{{ customer.customer_name }}</b></p>
+                              <p><b>Email</b> : <b>{{ customer.customer_email }}</b></p>
+                              <p><b>Phone </b>: <b>{{ customer.customer_phone }}</b></p>
+                              <p><b>Address</b> : {{ customer.customer_address }}</p>
+                            </td>
+                            <td>
+                              <h4>Driver Info</h4>
+                              <hr>
+                              <p><b>Name</b> : {{ customer.driver_name }}</p>
+                              <p><b>Phone </b>: {{ customer.driver_phone }}</p>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                  </div>
+                
+              </div>
+            </div>
+            <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">{{ page_title }}</h3>
+                  <span class="float-right"><a href="{%  url 'work:new_service' customer.id %}" class="btn btn-danger btn-sm"><b class="fa fa-envelope-open"></b> New Service</a></span>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Order No </th>
+                    <th>Car Details </th>
+                    <th>Service Cost</th>
+                    <th>Payment Status</th>
+                    <th>Work Status</th>
+                    <th>Arrival Date</th>                    
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                   {% if orders %}
+                          {% for order in orders %}
+                           <tr>
+                             <td><b class="text-success">ORD-{{ order.id }}</b></td>
+                             
+                             <td>
+                              <b>Name :</b>{{ order.car_name }}<br>
+                              <b>Plate No:</b>{{ order.plate_no }}<br>
+                              <b>Model :</b>{{ order.model_no }}
+
+                             </td>
+
+                             <td>
+                              <b>{{ order.total_amount|intcomma }} {{ order.currence_type }}</b> </td>
+
+                             <td>{% if order.payment_status == 'Paid' %}
+                                <b class="text-success">Paid</b>
+                                {% else %}
+                                 <b class="text-info">Unpaid</b>
+                                 {% endif %}
+                             </td>
+
+                             <td>{% if order.work_status == 'Accepted' %}
+                                <b class="text-success">Accepted</b>
+                                {% elif order.work_status == 'Denied' %}
+                                 <b class="text-danger">Denied</b>
+                                 {% else %}
+                                 <b class="text-info">{{order.work_status }}</b>
+                                 {% endif %}
+
+
+                             </td>
+                             <td>{{ order.arrival_date|date }}</td>
+                             <td>
+                               <a class="btn  btn-success btn-sm" href="{% url 'work:order_detail' order.id %}" title="Details"><b class="fa fa-eye"></b> </a> 
+                               <a class="btn  btn-info btn-sm" href="{% url 'work:update_order' order.id %}" title="Update Order Details"><b class="fa fa-edit"></b> </a> 
+                             
+                              <a class="btn  btn-danger btn-sm delete_post" href="" title="Delete"><b class="fa fa-trash"></b> </a> 
+
+                              
+
+                            </td>
+                           </tr>
+                           {% endfor %}
+                           {%  else  %}
+                           <tr>
+                             <td colspan="4"><p class="text-danger"><b>No order yet!</b></p></td>
+                           </tr>
+                           {% endif %}
+                 
+                  </tbody>
+                 
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+             
+
+
+
+           </div>
+           
+      
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+
+{% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the post?');
+                  })
+    </script>
+{% endblock page_scripts %}
+  

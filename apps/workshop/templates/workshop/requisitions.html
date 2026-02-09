@@ -1,0 +1,217 @@
+{% extends 'work/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{{ page_title }} <span class="badge badge-success">{{all_in_no}}</span></h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'work:dashboard' %}">Home</a></li>
+             
+              <li class="breadcrumb-item active">{{ page_title }}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+                       {% if messages %}
+                         {% for message in messages %}
+                         <div class="alert alert-{{ message.tags }}   alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <p><strong>Notification!</strong></p>
+                              <p>{{ message }}.</p>
+                         </div>
+                         {% endfor %}
+                      {% endif %}
+      <div class="container-fluid row">
+        <!-- Small boxes (Stat box) -->
+       
+
+           <div class="col-lg-12">
+             <div class="card card-secondary">
+              <div class="card-header">
+                <h3 class="card-title">{{ page_title }}</h3>
+                  
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                  <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>ID </th>
+                    <th>Name </th>
+                    <th>make</th>
+                    <th>To</th>
+                    <th>Authorised By</th>      
+                    <th>Last Updated</th> <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                   {% if requisitions %}
+                          {% for reqs in requisitions %}
+                           <tr>
+                             <td><b class="text-danger">REG{{ reqs.id }}</b></td>
+                             <td>{{ reqs.name }}</td>
+                             <td>{{ reqs.make }}</td>
+                             <td><b>{{ reqs.requisition_to }}</b> </td>
+
+                             <td>{{ reqs.authorized_by }}</td>
+                             <td>{{ reqs.updated_at|date }}</td>
+
+                             <!-- <td>{% if vendor.status == 1 %}
+                                <b class="text-success">Published</b>
+                                {% else %}
+                                 <b class="text-info">Draft</b>
+                                 {% endif %}
+
+
+                             </td> -->
+                            
+                             <td>
+                              <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#vendorModel{{ reqs.id}}"><b class="fa fa-eye"></b> View</button> &nbsp;
+                              <a class="btn  btn-danger btn-sm delete_post" href="" title="Delete"><b class="fa fa-trash"></b> </a> 
+
+                              <!-- Modal -->
+                              <div id="vendorModel{{ reqs.id}}" class="modal fade" role="dialog">
+                                <div class="modal-dialog modal-lg">
+
+                                  <!-- Modal content-->
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                     
+                                      <h4 class="modal-title text-info"><b>Quick Preview </b></h4>
+                                       <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <p>
+                                        <b>DATE :</b> {{ reqs.created_at|date }}  <br>
+                                        <b>NAME :</b> {{ reqs.name}}  <br>
+                                        <b>MAKE :</b> {{ reqs.make}}  <br>
+                                        <b>REG  :</b> {{ reqs.id}}  <br>
+                                        <b>FROM :</b> {{ reqs.requisition_from}}  <br>
+                                        <b>TO  :</b> {{ reqs.requisition_to}}  
+                                        <span class="float-right">
+                                          Total Remarks : <b class="text-danger">{{ reqs.total_amount|intcomma }} TZS</b> 
+                                        </span>
+                                        <
+                                      </p>
+                                      <div class="table-response">
+                                        <table class="table table-striped table-bordered">
+                                         
+                                            <thead>
+                                              <tr>
+                                                <th>ITEM CODE</th>
+                                                <th>DESCRIPTION</th>
+                                                <th>SUPPLIER</th>
+                                                <th>UNIT </th>
+                                                <th>QUANTITY</th>
+                                                <th>REMARKS</th>
+                                                <th>HQ FEEDBACK</th>
+                                              </tr>
+                                            </thead>
+                                           
+                                          <tbody>
+                                            {% if reqs.ritems  %}
+                                            {% for item in reqs.ritems  %}
+                                            <tr>
+                                              <td>{{ forloop.counter }}</td>
+                                              <td>{{ item.item}}</td>
+                                              <td>{{ item.supplier}}</td>
+                                              <td>{{ item.unit}}</td>
+                                              <td>{{item.quantity}}</td>
+                                              <td>{{ item.remarks|intcomma}}</td>
+                                              <td>{{ item.hq_feedback}}</td>
+                                            </tr>
+                                            {% endfor %}
+
+                                            {% else  %}
+                                            <tr>
+                                              <td colspan="7"><p>No items added yet <span class="float-right">
+                                                <a href="" class="btn btn-info">Add Items</a>
+                                              </span></p></td>
+                                            </tr>
+
+                                            {% endif %}
+
+                                          </tbody>
+                                        </table>
+
+                                        <br>
+                                        <div class="btn-group">
+                                          <a href="" class="btn btn-info"><b class="fa fa-print"></b> Print</a>
+                                          <a href="{% url 'work:requisition_details' reqs.id %}" class="btn btn-success"><b class="fa fa-print"></b> Details </a>
+
+                                        
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+
+                                </div>
+                              </div>
+
+                            </td>
+                           </tr>
+                           {% endfor %}
+                           {%  else  %}
+                           <tr>
+                             <td colspan="6"><p class="text-danger"><b>No added vendor yet!</b></p></td>
+                           </tr>
+                           {% endif %}
+                 
+                  </tbody>
+                 
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+           </div>
+           
+      
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+    {% endblock  %}
+
+
+{% block page_scripts %}
+  <script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+<script type="text/javascript">
+      $(document).on('click', '.delete_post', function(){
+                      return confirm('Are you sure you want to delete the order?');
+                  })
+    </script>
+{% endblock page_scripts %}
+  
