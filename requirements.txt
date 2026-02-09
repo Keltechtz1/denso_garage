@@ -1,6 +1,7 @@
 Django==4.2.19
-PyMySQL==1.1.2
-
+cryptography
+PyMySQL
+gunicorn
 django-crispy-forms==2.3
 crispy-bootstrap4==2024.1
 crispy-bootstrap5==2024.10
