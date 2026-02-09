@@ -6,16 +6,12 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    default-libmysqlclient-dev \
-    build-essential \
+    default-libmysqlclient-dev gcc \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN python manage.py collectstatic --noinput
-
-CMD python manage.py migrate && \
-    gunicorn garage.wsgi:application --bind 0.0.0.0:8000
+CMD ["gunicorn", "routeafrica.wsgi:application", "--bind", "0.0.0.0:8000"]
