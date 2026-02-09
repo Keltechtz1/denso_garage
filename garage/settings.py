@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r&dt*cnp1dngw(_1lg!%yc^6gqrew%@a$3q6_*22lcfj4^z&1x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['densomotorsgarage.com', 'www.densomotorsgarage.com']
 # ALLOWED_HOSTS = ['www.mg.densomotors.com','mg.densomotors.com']
@@ -99,18 +99,13 @@ WSGI_APPLICATION = 'garage.wsgi.application'
 # }
 
 import os
+import dj_database_url
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": "3306",
-        "OPTIONS": {
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
-    }
+    'default': dj_database_url.parse(
+        os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=False
+    )
 }
 
 
