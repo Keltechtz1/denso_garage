@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r&dt*cnp1dngw(_1lg!%yc^6gqrew%@a$3q6_*22lcfj4^z&1x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['densomotorsgarage.com', 'www.densomotorsgarage.com','178.18.247.17']
 # ALLOWED_HOSTS = ['www.mg.densomotors.com','mg.densomotors.com']
