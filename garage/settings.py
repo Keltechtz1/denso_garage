@@ -28,6 +28,11 @@ DEBUG = True
 ALLOWED_HOSTS = ['densomotorsgarage.com', 'www.densomotorsgarage.com','178.18.247.17']
 # ALLOWED_HOSTS = ['www.mg.densomotors.com','mg.densomotors.com']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://densomotorsgarage.com",
+    "https://www.densomotorsgarage.com",
+    "http://densomotorsgarage.com",
+]
 
 # Application definition
 
